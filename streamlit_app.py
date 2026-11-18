@@ -642,17 +642,17 @@ tabs = st.tabs(["Overview", "Model Quality (Elbow & Silhouette)", "Cluster Profi
 # ---------------- Overview
 with tabs[0]:
     a, b = st.columns(2)
-    a.plotly_chart(fig_attrition_bar(k), use_container_width=True, key="chart1")
+    a.plotly_chart(fig_attrition_bar(k), width="stretch", key="chart1")
     size = go.Figure(go.Pie(labels=[f"C{c}: {l}" for c, l in zip(P.Cluster, P.Label)], values=P.Employees,
                             hole=.5, marker_colors=[ccolor(i) for i in range(k)]))
     size.update_layout(template=TEMPLATE, height=400, title="Segment size (share of workforce)",
                        margin=dict(l=20, r=20, t=50, b=20))
-    b.plotly_chart(size, use_container_width=True, key="chart2")
-    st.plotly_chart(fig_scatter(k), use_container_width=True, key="chart3")
+    b.plotly_chart(size, width="stretch", key="chart2")
+    st.plotly_chart(fig_scatter(k), width="stretch", key="chart3")
 
 # ---------------- Model quality
 with tabs[1]:
-    st.plotly_chart(fig_elbow_sil(k), use_container_width=True, key="chart4")
+    st.plotly_chart(fig_elbow_sil(k), width="stretch", key="chart4")
     st.markdown(
         f"**Selected k = {k}: silhouette {SIL[k]:.3f}.** Silhouette peaks at k = {BEST_SIL_K} "
         f"({SIL.max():.3f}), but two segments only separate Sales from everyone else. k = 4 is a local "
@@ -661,15 +661,15 @@ with tabs[1]:
         "quality with segments HR can act on. Silhouette values around 0.2 indicate overlapping (not crisp) "
         "segments, typical of HR data.")
     st.dataframe(METRICS.assign(inertia=METRICS.inertia.round(0), silhouette=METRICS.silhouette.round(3)),
-                 hide_index=True, use_container_width=True)
+                 hide_index=True, width="stretch")
 
 # ---------------- Profiles
 with tabs[2]:
-    st.dataframe(P, hide_index=True, use_container_width=True)
-    st.plotly_chart(fig_heatmap(k), use_container_width=True, key="chart5")
+    st.dataframe(P, hide_index=True, width="stretch")
+    st.plotly_chart(fig_heatmap(k), width="stretch", key="chart5")
     var = st.selectbox("Drill-down: attrition inside each segment by", CLUSTER_VARS,
                        index=CLUSTER_VARS.index("JobSatisfaction"))
-    st.plotly_chart(fig_drill(k, var), use_container_width=True, key="chart6")
+    st.plotly_chart(fig_drill(k, var), width="stretch", key="chart6")
     st.markdown("#### Segment summaries")
     for _, r in P.iterrows():
         st.markdown(f"**C{r.Cluster} · {r.Label} ({r.Risk}, {r['Attrition rate %']}%):** {r.Employees} employees; "
@@ -697,8 +697,8 @@ with tabs[3]:
         st.markdown("#### Employee characteristics")
         st.caption("Pre-filled with IBM medians / most frequent values — change only what you need.")
         b1, b2 = st.columns(2)
-        b1.button("Junior Sales example", on_click=_set, args=(EXAMPLE,), use_container_width=True)
-        b2.button("Reset defaults", on_click=_set, args=(DEFAULTS,), use_container_width=True)
+        b1.button("Junior Sales example", on_click=_set, args=(EXAMPLE,), width="stretch")
+        b2.button("Reset defaults", on_click=_set, args=(DEFAULTS,), width="stretch")
         for v in CLUSTER_VARS:
             if v in LABELS:
                 st.selectbox(v, list(LABELS[v]), key=f"sim_{v}", format_func=lambda i, v=v: f"{i} – {LABELS[v][i]}")
@@ -723,8 +723,8 @@ with tabs[3]:
                     f"Segment profile: age {R.Age}, JobLevel {R.JobLevel}, ${R.MonthlyIncome:,.0f}/month, "
                     f"{R.YearsAtCompany} yrs at IBM, satisfaction {R.JobSatisfaction}/4, WLB {R.WorkLifeBalance}/4.")
         st.caption("This is the observed rate of similar employees, not a prediction for this person.")
-        st.plotly_chart(fig_distances(E["dist"], E["assigned"], k), use_container_width=True, key="chart7")
-        st.plotly_chart(fig_scatter(k, E["z"]), use_container_width=True, key="chart8")
+        st.plotly_chart(fig_distances(E["dist"], E["assigned"], k), width="stretch", key="chart7")
+        st.plotly_chart(fig_scatter(k, E["z"]), width="stretch", key="chart8")
 
 # ---------------- Interpretability
 with tabs[4]:
@@ -767,12 +767,12 @@ with tabs[5]:
         f"*centre* (average profile) of each segment and picks the closest one: distance {e['dist'][a_]:.2f} vs "
         f"{e['dist'][b_]:.2f} for the next-closest segment, C{b_+1} {P.Label.iloc[b_]}. That gap makes this a "
         f"**{e['confidence']}** match. The traits that matter most here are **{', '.join(top)}**:")
-    st.dataframe(driver_table(rec, e, k), hide_index=True, use_container_width=True)
+    st.dataframe(driver_table(rec, e, k), hide_index=True, width="stretch")
     st.caption("Distances are measured on standardised scales, so a $1,000 income gap and a one-step "
                "satisfaction gap are compared fairly.")
     a, b = st.columns(2)
-    a.plotly_chart(fig_distances(e["dist"], a_, k), use_container_width=True, key="chart9")
-    b.plotly_chart(fig_drivers(e["contrib"]), use_container_width=True, key="chart10")
+    a.plotly_chart(fig_distances(e["dist"], a_, k), width="stretch", key="chart9")
+    b.plotly_chart(fig_drivers(e["contrib"]), width="stretch", key="chart10")
 
 # ---------------- AI Assistant
 SUGGESTIONS = ["Which segment has the highest attrition?", "Why did you choose k=4?",
@@ -786,7 +786,7 @@ with tabs[6]:
     cols = st.columns(len(SUGGESTIONS))
     clicked = None
     for i, s in enumerate(SUGGESTIONS):
-        if cols[i].button(s, key=f"sugg{i}", use_container_width=True):
+        if cols[i].button(s, key=f"sugg{i}", width="stretch"):
             clicked = s
     typed = st.chat_input("Ask about the segments…")
     q = typed or clicked
