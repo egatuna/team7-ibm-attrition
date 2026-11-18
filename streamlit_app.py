@@ -608,7 +608,7 @@ def chat_answer(q, k, sim):
 # ---------------------------------------------------------------------------
 st.markdown(f"""
 <style>
-.block-container {{padding-top: 1.2rem;}}
+.block-container {{padding-top: 3rem;}}
 .hdr {{background:{NAVY}; color:white; padding:18px 24px; border-radius:12px; margin-bottom:10px;}}
 .hdr h2 {{margin:0; color:white;}} .hdr div {{color:{GOLD};}}
 .warn {{background:#FFF4D6; padding:8px 14px; border-radius:8px; font-size:13px; margin-bottom:12px; color:#1d2733;}}
